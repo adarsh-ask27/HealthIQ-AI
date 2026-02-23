@@ -222,8 +222,8 @@ HealthIQ AI empowers individuals to:
 
 ## 👨‍💻 Team
 
-**Team Name:** ____________________  
-**Members:** ____________________  
+**Team Name:** "Proactive Minds" 
+**Members:** Adarsh Pandey(Team Leader) , Rahul H , Gargi Kalpesh Tamore , Kuzhichamadathil Pranav SantoshKumar.
 
 ---
 
