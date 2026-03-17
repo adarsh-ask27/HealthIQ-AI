@@ -15,7 +15,7 @@ function Upload({ onDataExtracted }) {
       formData.append("file", file); // ✅ IMPORTANT
 
       const res = await axios.post(
-        "http://localhost:8000/upload-report",
+        "https://healthiq-backend.onrender.com/upload-report",
         formData,
         {
           headers: {
