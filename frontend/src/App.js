@@ -1,15 +1,17 @@
-import React from "react";
+import React, { useState } from "react";
 import Upload from "./components/Upload";
 import Simulator from "./components/Simulator";
-import "./index.css";
 
 function App() {
+  const [extractedData, setExtractedData] = useState(null);
+
   return (
     <div className="container">
       <h1>HealthIQ AI</h1>
-      <p>Understand. Predict. Prevent.</p>
-      <Upload />
-      <Simulator />
+
+      <Upload onDataExtracted={setExtractedData} />
+
+      <Simulator extractedData={extractedData} />
     </div>
   );
 }

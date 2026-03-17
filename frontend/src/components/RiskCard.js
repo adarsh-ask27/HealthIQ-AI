@@ -1,3 +1,5 @@
+import { CircularProgressbar } from 'react-circular-progressbar';
+import 'react-circular-progressbar/dist/styles.css';
 function RiskCard({ result }) {
 
   const riskPercent = result.current_risk_percent;
@@ -20,6 +22,12 @@ function RiskCard({ result }) {
       <h2 style={{ color }}>
         Risk Level: {result.risk_level} ({riskPercent}%)
       </h2>
+      <div style={{ width: "120px", margin: "20px auto" }}>
+  <CircularProgressbar
+    value={riskPercent}
+    text={`${riskPercent}%`}
+  />
+</div>
 
       <p>
         Improvement after lifestyle changes:
@@ -30,6 +38,19 @@ function RiskCard({ result }) {
       <p>
         {result.clinical_message}
       </p>
+      {/* AI Insight */}
+{result.explanation && (
+  <p style={{ fontWeight: "bold", marginTop: "10px" }}>
+    🧠 AI Insight: Your primary risk is driven by{" "}
+    {Object.entries(result.explanation)
+      .sort((a, b) => b[1] - a[1])[0][0]}.
+  </p>
+)}
+      <p>
+  <strong>Main Risk Driver:</strong>{" "}
+  {Object.entries(result.explanation)
+    .sort((a, b) => b[1] - a[1])[0][0]}
+</p>
 
       {/* Health Literacy Mode */}
       <p>
@@ -61,7 +82,17 @@ function RiskCard({ result }) {
           </ul>
         </div>
       )}
-
+      <button
+  onClick={() => {
+    const blob = new Blob([JSON.stringify(result, null, 2)], {
+      type: "application/json",
+    });
+    const url = URL.createObjectURL(blob);
+    window.open(url);
+  }}
+>
+  Download Report 📄
+</button>
     </div>
   );
 }

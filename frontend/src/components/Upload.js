@@ -1,30 +1,55 @@
 import React, { useState } from "react";
 import axios from "axios";
 
-function Upload() {
+function Upload({ onDataExtracted }) {
   const [file, setFile] = useState(null);
 
   const handleUpload = async () => {
-    const formData = new FormData();
-    formData.append("file", file);
+    if (!file) {
+      alert("Please select a file first");
+      return;
+    }
 
-    const res = await axios.post(
-      "http://127.0.0.1:8000/upload-report",
-      formData
-    );
+    try {
+      const formData = new FormData();
+      formData.append("file", file); // ✅ IMPORTANT
 
-    console.log(res.data);
-    alert("Report Processed! Check console.");
+      const res = await axios.post(
+        "http://localhost:8000/upload-report",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      console.log("Extracted:", res.data);
+
+      if (onDataExtracted) {
+        onDataExtracted(res.data);
+      }
+
+      alert("Upload successful!");
+
+    } catch (error) {
+      console.error("Upload Error:", error);
+      alert("Upload failed. Check backend.");
+    }
   };
 
   return (
     <div>
-      <h2>Upload Medical Report</h2>
+      <h3>Upload Report</h3>
+
       <input
         type="file"
         onChange={(e) => setFile(e.target.files[0])}
       />
-      <button onClick={handleUpload}>Upload</button>
+
+      <button onClick={handleUpload}>
+        Upload & Analyze
+      </button>
     </div>
   );
 }

@@ -1,15 +1,29 @@
 import easyocr
-import shutil
+import numpy as np
+from PIL import Image
+import io
+from pdf2image import convert_from_bytes
 
 reader = easyocr.Reader(['en'])
 
 def extract_text(file):
-    file_path = f"temp_{file.filename}"
-    
-    with open(file_path, "wb") as buffer:
-        shutil.copyfileobj(file.file, buffer)
+    contents = file.file.read()
 
-    result = reader.readtext(file_path, detail=0)
-    text = " ".join(result)
-    
-    return text
+    try:
+        # 🔥 Handle PDF
+        if file.filename.lower().endswith(".pdf"):
+            images = convert_from_bytes(contents)
+            image = images[0]  # take first page
+        else:
+            # 🔥 Handle Image
+            image = Image.open(io.BytesIO(contents)).convert("RGB")
+
+        image_np = np.array(image)
+
+        result = reader.readtext(image_np, detail=0)
+
+        return " ".join(result)
+
+    except Exception as e:
+        print("OCR Error:", e)
+        return ""

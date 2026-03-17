@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import RiskCard from "./RiskCard";
 import RiskChart from "./RiskChart";
 
-function Simulator() {
+function Simulator({ extractedData }) {
   const [data, setData] = useState({
     age: 50,
     cholesterol: 240,
@@ -18,19 +18,42 @@ function Simulator() {
     setData({ ...data, [e.target.name]: Number(e.target.value) });
   };
 
-  const simulate = async () => {
-    const res = await axios.post(
-      "http://localhost:8000/simulate-risk",
-      {
-        ...data,
-        new_cholesterol: data.cholesterol - 20,
-        new_bp: data.bp - 10,
-        new_bmi: data.bmi - 2,
-        new_smoking: 0,
-      }
-    );
-    setResult(res.data);
+  // ✅ FIXED simulate function (no circular JSON issue)
+  const simulate = async (customData = data) => {
+    try {
+      const res = await axios.post(
+        "http://localhost:8000/simulate-risk",
+        {
+          ...customData,
+          new_cholesterol: customData.cholesterol - 20,
+          new_bp: customData.bp - 10,
+          new_bmi: customData.bmi - 2,
+          new_smoking: 0,
+        }
+      );
+
+      setResult(res.data);
+    } catch (error) {
+      console.error("Simulation Error:", error);
+      alert("Simulation failed");
+    }
   };
+
+  // ✅ Auto-fill from upload + auto simulate
+  useEffect(() => {
+    if (extractedData) {
+      const updatedData = {
+        ...data,
+        cholesterol: extractedData.cholesterol || data.cholesterol,
+        bp: extractedData.bp || data.bp,
+        bmi: extractedData.bmi || data.bmi,
+        smoking: extractedData.smoking || data.smoking,
+      };
+
+      setData(updatedData);
+      simulate(updatedData);
+    }
+  }, [extractedData]);
 
   return (
     <div>
@@ -41,7 +64,10 @@ function Simulator() {
         <input name="bmi" type="number" value={data.bmi} onChange={handleChange}/>
       </div>
 
-      <button onClick={simulate}>Simulate Future Risk</button>
+      {/* ✅ CRITICAL FIX HERE */}
+      <button onClick={() => simulate()}>
+        Simulate Future Risk
+      </button>
 
       {result && (
         <>
