@@ -3,6 +3,7 @@ uvicorn
 pandas
 numpy
 scikit-learn
-easyocr
 joblib
 python-multipart
+pillow
+pdf2image
