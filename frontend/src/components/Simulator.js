@@ -22,7 +22,7 @@ function Simulator({ extractedData }) {
   const simulate = async (customData = data) => {
     try {
       const res = await axios.post(
-        "https://healthiq-backend.onrender.com/simulate-risk",
+        "https://healthiq-ai-backend.onrender.com/simulate-risk",
         {
           ...customData,
           new_cholesterol: customData.cholesterol - 20,
