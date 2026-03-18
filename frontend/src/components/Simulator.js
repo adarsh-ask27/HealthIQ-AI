@@ -41,19 +41,21 @@ function Simulator({ extractedData }) {
 
   // ✅ Auto-fill from upload + auto simulate
   useEffect(() => {
-    if (extractedData) {
+  if (extractedData) {
+    setData((prev) => {
       const updatedData = {
-        ...data,
-        cholesterol: extractedData.cholesterol || data.cholesterol,
-        bp: extractedData.bp || data.bp,
-        bmi: extractedData.bmi || data.bmi,
-        smoking: extractedData.smoking || data.smoking,
+        ...prev,
+        cholesterol: extractedData.cholesterol || prev.cholesterol,
+        bp: extractedData.bp || prev.bp,
+        bmi: extractedData.bmi || prev.bmi,
+        smoking: extractedData.smoking || prev.smoking,
       };
 
-      setData(updatedData);
-      simulate(updatedData);
-    }
-  }, [extractedData]);
+      simulate(updatedData); // call here safely
+      return updatedData;
+    });
+  }
+}, [extractedData]);
 
   return (
     <div>
