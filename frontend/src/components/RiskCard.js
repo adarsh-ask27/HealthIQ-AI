@@ -1,5 +1,5 @@
 import { CircularProgressbar } from 'react-circular-progressbar';
-import 'react-circular-progressbar/dist/styles.css';
+//import 'react-circular-progressbar/dist/styles.css';
 function RiskCard({ result }) {
 
   const riskPercent = result.current_risk_percent;
