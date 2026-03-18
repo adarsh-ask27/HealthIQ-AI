@@ -40,6 +40,7 @@ function Simulator({ extractedData }) {
   };
 
   // ✅ Auto-fill from upload + auto simulate
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
   if (extractedData) {
     setData((prev) => {
