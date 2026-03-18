@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import RiskCard from "./RiskCard";
 import RiskChart from "./RiskChart";
@@ -19,28 +19,27 @@ function Simulator({ extractedData }) {
   };
 
   // ✅ FIXED simulate function (no circular JSON issue)
-  const simulate = async (customData = data) => {
-    try {
-      const res = await axios.post(
-        "https://healthiq-ai-backend.onrender.com/simulate-risk",
-        {
-          ...customData,
-          new_cholesterol: customData.cholesterol - 20,
-          new_bp: customData.bp - 10,
-          new_bmi: customData.bmi - 2,
-          new_smoking: 0,
-        }
-      );
+  const simulate = useCallback(async (customData = data) => {
+  try {
+    const res = await axios.post(
+      "https://healthiq-ai-backend.onrender.com/simulate-risk",
+      {
+        ...customData,
+        new_cholesterol: customData.cholesterol - 20,
+        new_bp: customData.bp - 10,
+        new_bmi: customData.bmi - 2,
+        new_smoking: 0,
+      }
+    );
 
-      setResult(res.data);
-    } catch (error) {
-      console.error("Simulation Error:", error);
-      alert("Simulation failed");
-    }
-  };
+    setResult(res.data);
+  } catch (error) {
+    console.error("Simulation Error:", error);
+    alert("Simulation failed");
+  }
+}, [data]);
 
   // ✅ Auto-fill from upload + auto simulate
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
   if (extractedData) {
     setData((prev) => {
@@ -52,11 +51,11 @@ function Simulator({ extractedData }) {
         smoking: extractedData.smoking || prev.smoking,
       };
 
-      simulate(updatedData); // call here safely
+      simulate(updatedData);
       return updatedData;
     });
   }
-}, [extractedData]);
+}, [extractedData, simulate]);
 
   return (
     <div>
